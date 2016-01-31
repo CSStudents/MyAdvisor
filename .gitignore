@@ -3,6 +3,9 @@
 *.log
 dump
 
+# Java / Scala
+*.class
+
 # Play Framework
 .eclipse
 *.eml
@@ -19,7 +22,7 @@ test-result
 tmp/
 
 # Eclipse / IntelliJ
-.cache
+*.cache
 .classpath
 .project
 
