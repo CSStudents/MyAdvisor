@@ -1,0 +1,26 @@
+# General
+*~
+*.log
+dump
+
+# Play Framework
+.eclipse
+*.eml
+RUNNING_PID
+server.pid
+/db
+/dist/
+/lib/
+/logs/
+/modules
+/project/target
+/target
+test-result
+tmp/
+
+# Eclipse / IntelliJ
+.cache
+.classpath
+.project
+
+bin/
