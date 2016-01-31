@@ -23,6 +23,8 @@ tmp/
 
 # Eclipse / IntelliJ
 *.cache
+.cache-main
+.cache-tests
 .classpath
 .project
 
