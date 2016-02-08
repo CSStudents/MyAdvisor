@@ -3,7 +3,7 @@ Master branch status (master):
 
 [![Build Status](https://travis-ci.org/CSStudents/MyAdvisor.svg?branch=master)](https://travis-ci.org/CSStudents/MyAdvisor)
 
-Main development branch status (dev):
+Development branch status (dev):
 
 [![Build Status](https://travis-ci.org/CSStudents/MyAdvisor.svg?branch=dev)](https://travis-ci.org/CSStudents/MyAdvisor)
 
