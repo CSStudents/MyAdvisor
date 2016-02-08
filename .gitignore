@@ -8,6 +8,7 @@ dump
 
 # Play Framework
 .eclipse
+.settings
 *.eml
 RUNNING_PID
 server.pid
