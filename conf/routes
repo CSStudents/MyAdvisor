@@ -6,5 +6,16 @@
 GET     /                           controllers.Application.index
 GET     /db                         controllers.Application.db
 
+#Displays all adivsors in a list
+GET     /advisors/                  controllers.Advisors.list
+#Displays a specific advisor info
+GET     /advisors/:sin              controllers.Advisors.info(sin)
+
+#Displays all offices in a list
+#GET     /offices/                  controllers.Advisors.list
+#Displays a specific office info?
+#GET     /offices/:sin              controllers.Advisors.info(sin)
+
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
