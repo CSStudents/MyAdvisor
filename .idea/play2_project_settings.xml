@@ -10,10 +10,27 @@
             </ProjectSettingsEntry>
           </value>
         </entry>
-        <entry key="root">
+        <entry key="playRoutesImports">
           <value>
             <ProjectSettingsEntry>
-              <option name="confDir" value="C:\Users\Jimmy\Desktop\CPSC304\MyAdvisor\app" />
+              <option name="routesImports">
+                <list>
+                  <option value="controllers.Assets.Asset" />
+                </list>
+              </option>
+            </ProjectSettingsEntry>
+          </value>
+        </entry>
+        <entry key="sourceDirectory">
+          <value>
+            <ProjectSettingsEntry>
+              <option name="sourceDir" value="$PROJECT_DIR$/app" />
+            </ProjectSettingsEntry>
+          </value>
+        </entry>
+        <entry key="twirlTemplatesImports">
+          <value>
+            <ProjectSettingsEntry>
               <option name="templateImports">
                 <list>
                   <option value="models._" />
@@ -25,12 +42,13 @@
                   <option value="play.api.data._" />
                 </list>
               </option>
-              <option name="routesImports">
-                <list>
-                  <option value="controllers.Assets.Asset" />
-                </list>
-              </option>
-              <option name="uri" value="/C:/Users/Jimmy/Desktop/CPSC304/MyAdvisor" />
+            </ProjectSettingsEntry>
+          </value>
+        </entry>
+        <entry key="uri">
+          <value>
+            <ProjectSettingsEntry>
+              <option name="uri" value="$PROJECT_DIR$" />
             </ProjectSettingsEntry>
           </value>
         </entry>
