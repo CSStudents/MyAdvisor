@@ -1,0 +1,41 @@
+@(offices : List[Array[String]], multiple : Boolean)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+@*Specifies what content to produce*@
+@if(multiple){
+<h3>List of Offices</h3>
+<table>
+    <tr>
+        <td>Street Address</td>
+        <td>Phone number</td>
+    </tr>
+    @for(office <- offices){
+    <tr>
+        <td><a href="@routes.Offices.info(office(0))">@office(1)</a></td>
+        <td>@office(2)</td>
+    </tr>
+    }
+</table>
+}else {
+    @if(offices.isEmpty){
+        This office is not open yet! (no branches found associated)
+    }else{
+    <h3>Office location: @offices.head(0), @offices.head(1)</h3>
+    <p>Work Phone Number: @offices.head(2)</p>
+    <p>This office offers the following branches:
+        @for(office <- offices){
+            @** Need to fix the output commas.. **@
+            @office(3),
+        }
+    }
+    </p>
+}
+</body>
+</html>

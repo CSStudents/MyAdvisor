@@ -3,46 +3,51 @@ package controllers
 import play.api.db.DB
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
-import play.twirl.api.Html
 
 class Offices extends Controller{
 
   def list = Action {
-    var out = "Office location:        main office number: \n\n"
+    var officeList : List[Array[String]] = List()
     val conn = DB.getConnection()
     try {
       val stmt = conn.createStatement
 
-      val rs = stmt.executeQuery("SELECT streetaddress, mainofficenumber FROM officelocation")
+      val rs = stmt.executeQuery("SELECT oid, streetaddress, mainofficenumber FROM officelocation")
 
       while (rs.next) {
-        out += rs.getString(1) + rs.getString(2) +"\n"
+        val office : Array[String] = Array(rs.getString(1), rs.getString(2), rs.getString(3))
+        officeList = office :: officeList
 
       }
     } finally {
       conn.close()
     }
-    Ok(out)
+    Ok(views.html.offices(officeList, true))
   }
 
   def info(oid: String) = Action {
-    var out = ""
-    val exec = "SELECT streetaddress FROM officelocation WHERE officelocation.oid = '" + oid + "'"
+    var list : List[Array[String]] = List()
+    val exec = "SELECT officelocation.streetaddress, city, mainofficenumber, dptname  " +
+                "FROM officelocation, located_at " +
+                "WHERE officelocation.streetaddress = located_at.streetaddress and officelocation.oid = '" + oid + "'"
     val conn = DB.getConnection()
     try {
       val stmt = conn.createStatement
 
       val rs = stmt.executeQuery(exec)
 
-      while (rs.next) {
-        out += rs.getString(1)
-
+      while (rs.next) { //should be an inner loop...
+      val office : Array[String] = new Array(4)
+        office(0) = rs.getString(1)
+        office(1) = rs.getString(2)
+        office(2) = rs.getString(3)
+        office(3) = rs.getString(4)
+        list = office :: list
       }
     } finally {
       conn.close()
     }
-    val content = Html("<h4>Place holder for office " + out + " </h4>")
-    Ok(views.html.main(content))
+    Ok(views.html.offices(list, false))
   }
 
 }
