@@ -39,10 +39,9 @@ class Advisors extends Controller {
         val advisor : Array[String] = new Array(4)
         advisor(0) = rs.getString(1)
         advisor(1) = rs.getString(2)
-        advisor(2) = rs.getString(3) + ", " + rs.getString(4)
+        advisor(2) = rs.getString(3).trim() + ", " + rs.getString(4)
         advisor(3) = rs.getString(5)
         list = advisor :: list
-
       }
     } finally {
       conn.close()
