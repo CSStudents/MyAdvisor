@@ -5,8 +5,14 @@
 # Home page
 GET     /                           controllers.Application.index
 
+GET     /admin                      controllers.Advisors.admin
+
 #Displays all adivsors in a list
 GET     /advisors/                  controllers.Advisors.list
+#Saves a new advisor using the form to submit
+POST     /advisors/                 controllers.Advisors.save
+#Gets page form to submit a new advisor
+GET     /advisors/new               controllers.Advisors.newAdvisor
 #Displays a specific advisor info
 GET     /advisors/:sin              controllers.Advisors.info(sin)
 

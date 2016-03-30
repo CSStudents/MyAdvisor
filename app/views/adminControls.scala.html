@@ -1,0 +1,12 @@
+@(sample : String)(implicit flash: Flash, messages : Messages)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+    <p><a href="@controllers.routes.Advisors.newAdvisor()" class="btn">
+        <i class="icon-plus"></i> @Messages("products.new.command")</a></p>
+</body>
+</html>
