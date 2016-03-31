@@ -1,0 +1,15 @@
+@(client : Client)
+
+@if(client != null){
+    @main("client id:" + client.cid) {
+        <h3>info for Client: @client.name </h3>
+        <p>Birthdate: @client.birthDate </p>
+        <p>Home phone number: @client.homePhoneNumber </p>
+        <p>Address : @client.streetAddress , @client.city </p>
+
+    }
+}else{
+    @main("Not Found"){
+        <h3>No client found</h3>
+    }
+}

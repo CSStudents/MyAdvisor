@@ -1,0 +1,19 @@
+@(advisors : List[Advisor])
+
+@main("Advisor list"){
+    <h3>List of Advisors</h3>
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>Phone Number</td>
+            <td>Location</td>
+        </tr>
+        @for(advisor <- advisors){
+            <tr>
+                <td><a href="@routes.Advisors.info(advisor.sin)">@advisor.name</a></td>
+                <td>@advisor.workPhoneNumber </td>
+                <td>@advisor.city</td>
+            </tr>
+        }
+    </table>
+}
