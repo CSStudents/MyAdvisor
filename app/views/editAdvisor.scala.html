@@ -1,0 +1,22 @@
+@(advisorForm : Form[Advisor])(implicit flash: Flash, messages: Messages)
+
+@admin(Messages("Advisor.form")) {
+    <h2>@Messages("advisor.form")</h2>
+    @helper.form(action = routes.Advisors.save()) {
+        <fieldset>
+            <legend>
+            @Messages("advisor.details", Messages("advisor.new"))
+            </legend>
+                @helper.inputText(advisorForm("sin"))
+            @helper.inputText(advisorForm("name"))
+            @helper.inputText(advisorForm("workPhoneNumber"))
+            @helper.inputText(advisorForm("homePhoneNumber"))
+            @helper.inputText(advisorForm("streetAddress"))
+            @helper.inputText(advisorForm("city"))
+            @helper.inputText(advisorForm("province"))
+            @helper.inputText(advisorForm("ReportsTo"))
+        </fieldset>
+        <p><input type="submit" class="btn primary" value='@Messages("advisor.new.submit")'></p>
+    }
+}
+

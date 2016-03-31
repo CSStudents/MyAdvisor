@@ -1,0 +1,34 @@
+@(title : String)(content: Html)(implicit flash: Flash, messages: Messages)
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>@title</title>
+    </head>
+    <body>
+        <h2>Admin options for advisors</h2>
+        <ul class="nav">
+            <li class="divider-vertical"></li>
+            <li class="active">
+                <a href="@routes.Advisors.newAdvisor()">
+                    <i class="icon-plus icon-white"></i>
+                    @Messages("products.new.command")
+                </a>
+            </li>
+            <li class="divider-vertical"></li>
+        </ul>
+
+        <div class="container">
+            @if(flash.get("success").isDefined) {
+                <div class="alert alert-success">
+                @flash.get("success")
+                </div>
+            }
+            @if(flash.get("error").isDefined){
+                <div class="alert alert-error">
+                @flash.get("error")
+                </div>
+            }
+        </div>
+    </body>
+</html>
