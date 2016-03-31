@@ -1,6 +1,6 @@
 package controllers
 
-import models.Advisor
+import models.{AdvisorForm, Office, Advisor}
 import play.api.db.DB
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
@@ -9,101 +9,96 @@ import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Flash
+import play.api.Logger
 
 
 class Advisors extends Controller {
 
   def list = Action {
-    var advisorsList : List[Array[String]] = List()
+    var advisorsList : List[Advisor] = List()
     val conn = DB.getConnection()
     try {
       val stmt = conn.createStatement
       val rs = stmt.executeQuery("SELECT employee.sin, name, workPhoneNumber, city FROM employee")
 
       while (rs.next) {
-        val advisor : Array[String] = Array(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4))
+        val advisor : Advisor = Advisor(rs.getString(1), rs.getString(2), rs.getString(3), "", "", rs.getString(4), "", "", Nil)
         advisorsList = advisor :: advisorsList
 
       }
     } finally {
       conn.close()
     }
-    Ok(views.html.advisors(advisorsList, true))
+    Ok(views.html.advisors.list(advisorsList))
   }
 
   def info(sin: String) = Action {
-    var list : List[Array[String]] = List()
-    val exec =  "SELECT name, workPhoneNumber, streetAddress, city, dptName " +
+    var branchList : List[String] = List()
+    var data : Any = null
+    val exec =  "SELECT employee.sin, name, workPhoneNumber, streetAddress, city, reports_To, dptName " +
       "FROM employee, works_in " +
       "WHERE employee.sin = works_in.sin and employee.sin = '" + sin + "'"
     val conn = DB.getConnection()
     try {
       val stmt = conn.createStatement
-
       val rs = stmt.executeQuery(exec)
-
       while (rs.next) {
-        val advisor : Array[String] = new Array(4)
-        advisor(0) = rs.getString(1)
-        advisor(1) = rs.getString(2)
-        advisor(2) = rs.getString(3) + ", " + rs.getString(4)
-        advisor(3) = rs.getString(5)
-        list = advisor :: list
+        if (data  == null){
+          data = Advisor(rs.getString(1), rs.getString(2), rs.getString(3), "", rs.getString(4), rs.getString(5), "", rs.getString(6), Nil)
+
+        }
+
+        branchList = rs.getString(7) :: branchList
 
       }
     } finally {
       conn.close()
     }
-    Ok(views.html.advisors(list, false))
-  }
-
-  def admin = Action { implicit request =>
-    val sample : String = "Somestring"
-    Ok(views.html.adminControls(sample))
+    val advisor: Advisor = data.asInstanceOf[Advisor]
+    advisor.branches = branchList
+    Ok(views.html.advisors.info(advisor))
 
   }
 
-  def newAdvisor = Action { implicit request =>
-    val form = advisorForm
-    Ok(views.html.editAdvisor(form))
+  def saveAdvisor = Action { implicit request =>
+    advisorForm.bindFromRequest.fold(
+      formWithErrors => {
+        Logger.debug("inside error")
+        BadRequest(views.html.advisors.form(formWithErrors))
+      },
+      advisor => {
+//        this.save(advisor)
+        Redirect(routes.Application.index())
+              //.flashing("success" -> "Contact saved!")
+      }
+    )
   }
 
-  private val advisorForm: Form[Advisor] = Form(
+  def newAdvisor = Action {
+    val dummyAdvisor = AdvisorForm("","","","","","","","")
+    Ok(views.html.advisors.form(advisorForm.fill(dummyAdvisor)))
+  }
+
+  def save(form : AdvisorForm): Unit ={
+    // call db and save
+    Ok(views.html.nav())
+  }
+
+  private val advisorForm: Form[AdvisorForm] = Form(
     mapping(
-      "sin" -> nonEmptyText(9,9),
-      "name" -> nonEmptyText,
-      "workPhoneNumber" -> nonEmptyText(0,9),
-      "homePhoneNumber" -> nonEmptyText(0,9),
-      "streetAddress" ->   nonEmptyText(0, 20),
-      "city" -> nonEmptyText(0, 20),
-      "province" -> nonEmptyText(0, 2),
-      "ReportsTo" -> Forms.text.verifying("validation.reportsTo.incorrect", this.lookBySin(_))
-    )(Advisor.apply)(Advisor.unapply)
+      "sin" -> nonEmptyText,
+      "name" -> text,
+      "workPhoneNumber" -> text,
+      "homePhoneNumber" -> text,
+      "streetAddress" ->   text,
+      "city" -> text,
+      "province" -> text,
+      "ReportsTo" -> text
+    )(AdvisorForm.apply)(AdvisorForm.unapply)
   )
 
-  def lookBySin(sin: String): Boolean ={
-    return true
+  def lookBySin(sin : Int) : Boolean = {
+    true
   }
-
-  def save = Action{implicit request =>
-    val newAdvisorForm = advisorForm.bindFromRequest()
-
-    newAdvisorForm.fold(
-
-      hasErrors = { form => Redirect(routes.Advisors.newAdvisor()).
-        flashing(Flash(form.data) + ("error" -> Messages("validation.errors")))},
-
-      success = {newAdvisor => this.add(newAdvisor)
-                  Redirect(routes.Advisors.list())}
-    )
-
-  }
-
-  def add(advisor: Advisor) ={
-    //add advisor to db...
-  }
-
-
-
 
 }

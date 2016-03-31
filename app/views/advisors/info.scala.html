@@ -1,0 +1,14 @@
+@(advisor : Advisor)
+
+@main("Advisor: " + advisor.name){
+    <h3>info for advisor: @advisor.name </h3>
+    <p>Work Phone Number: @advisor.workPhoneNumber </p>
+    <p>Location: @advisor.streetAddress </p>
+    <p>Specializes in branches:
+        @for(branch <- advisor.branches){
+            @** Need to fix the output commas.. **@
+            @branch.trim(),
+    }
+    </p>
+    <p>Reports to: @advisor.reports_To </p>
+}

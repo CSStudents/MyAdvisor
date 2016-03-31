@@ -1,0 +1,17 @@
+@(clients : List[Client])
+
+@main("Offices list"){
+  <h3>List of Clients</h3>
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>Client Id</td>
+        </tr>
+        @for(client <- clients){
+            <tr>
+                <td><a href="@routes.Clients.info(client.cid)">@client.name </a></td>
+                <td>@client.cid </td>
+            </tr>
+        }
+    </table>
+}
