@@ -4,6 +4,10 @@ import models.Client
 import play.api.db.DB
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
+import play.api.data._
+import play.api.data.Forms._
+import java.util.Date
+
 class Clients extends Controller{
 
   def list = Action {
@@ -49,5 +53,33 @@ class Clients extends Controller{
     }
     Ok(views.html.clients.info(client))
   }
+
+  case class ClientData(name: String, birthdate: Date,  homephone: Int, workphone: Int,
+                        streetAddress: String, city: String, province: String, postalCode: String)
+
+  val clientFormTuple = Form(
+    tuple(
+      "name" -> text,
+      "birthdate" -> date,
+      "homephone" -> number,
+      "workphone" -> number,
+      "streetAddress" -> text,
+      "city" -> text,
+      "province" -> text,
+      "postalCode" -> text
+    )
+  )
+
+  def submit = Action { implicit request =>
+    val (name, birthdate, homephone, workphone,
+    streetAddress, city, province, postalCode) = clientFormTuple.bindFromRequest.get
+    Ok("Hi %s".format(name))
+  }
+
+  def clientCreate = Action {
+    Ok(views.html.clients.clientCreate())
+  }
+
+
 
 }

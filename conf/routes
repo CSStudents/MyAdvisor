@@ -24,6 +24,10 @@ GET     /user/                  controllers.Clients.list
 #Displays a specific user info using their unique cid
 GET     /user/:cid              controllers.Clients.info(cid)
 
+# Client Creation page
+GET     /clientCreate/             controllers.Clients.clientCreate
+POST    /clientCreate/             controllers.Clients.submit
+
 
 
 
