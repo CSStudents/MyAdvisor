@@ -1,4 +1,4 @@
-@(content: String)
+@(header: String)(content : Html)
 
 <!DOCTYPE html>
 
@@ -15,7 +15,7 @@
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
 
-        <title>MyAdvisor</title>
+        <title>@header</title>
 
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
@@ -23,23 +23,6 @@
     </head>
     <body>
         @content
-
-        <div class="container">
-            <div class="page-header">
-                <h1>Welcome to MyAdvisor</h1>
-            </div>
-            <div class="jumbotron">
-                <h2>About MyAdvisor</h2>
-
-                <p>Explain info about myAdvisor</p>
-
-                <a href="#" class="btn btn-default btn-lg" role="button">Login</a>
-
-                <button type="submit" class="btn btn-success btn-lg" role="button">Create Account</button>
-            </div>
-
-        </div>
-
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

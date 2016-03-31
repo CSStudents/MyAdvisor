@@ -1,5 +1,6 @@
 package controllers
 
+import models.Office
 import play.api.db.DB
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
@@ -7,47 +8,45 @@ import play.api.Play.current
 class Offices extends Controller{
 
   def list = Action {
-    var officeList : List[Array[String]] = List()
+    var officeList : List[Office] = List()
     val conn = DB.getConnection()
     try {
       val stmt = conn.createStatement
-
-      val rs = stmt.executeQuery("SELECT oid, streetaddress, mainofficenumber FROM officelocation")
-
+      val rs = stmt.executeQuery("SELECT streetaddress, oid, mainofficenumber FROM officelocation")
       while (rs.next) {
-        val office : Array[String] = Array(rs.getString(1), rs.getString(2), rs.getString(3))
+        val office : Office = Office(rs.getString(1), "postalCodePlaceHolder", "CityPlaceHolder", "ProvincePlaceHolder",rs.getString(3), rs.getString(2), Nil)
         officeList = office :: officeList
-
       }
     } finally {
       conn.close()
     }
-    Ok(views.html.offices(officeList, true))
+    Ok(views.html.offices.list(officeList))
   }
 
   def info(oid: String) = Action {
-    var list : List[Array[String]] = List()
+    var branchList : List[String] = List()
+    var data : Any = null
     val exec = "SELECT officelocation.streetaddress, city, mainofficenumber, dptname  " +
                 "FROM officelocation, located_at " +
                 "WHERE officelocation.streetaddress = located_at.streetaddress and officelocation.oid = '" + oid + "'"
     val conn = DB.getConnection()
     try {
       val stmt = conn.createStatement
-
       val rs = stmt.executeQuery(exec)
-
-      while (rs.next) { //should be an inner loop...
-      val office : Array[String] = new Array(4)
-        office(0) = rs.getString(1)
-        office(1) = rs.getString(2)
-        office(2) = rs.getString(3)
-        office(3) = rs.getString(4)
-        list = office :: list
+      while (rs.next) {
+        if (data == null){
+          data = Office(rs.getString(1), "PostalCodePlaceHolder", rs.getString(2), "provPlaceHolder" ,rs.getString(3), oid, Nil )
+        }
+        branchList = rs.getString(4) :: branchList
       }
     } finally {
       conn.close()
     }
-    Ok(views.html.offices(list, false))
+    val office: Office = data.asInstanceOf[Office]
+    if(office != null){
+      office.branches = branchList
+    }
+    Ok(views.html.offices.info(office))
   }
 
 }
