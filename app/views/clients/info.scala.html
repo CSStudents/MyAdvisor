@@ -1,16 +1,26 @@
+@(client : Client, clientForm : Form[ClientForm] )(implicit messages: Messages)
 
-@(client : Client)
 
 @if(client != null){
     @main("client:" + client.name) {
-        <h3>info for Client: @client.name </h3>
-        <p>Birthdate: @client.birthDate </p>
-        <p>Home phone number: @client.homePhoneNumber </p>
-        <p>Address : @client.streetAddress , @client.city </p>
+        <h3>Info for Client: @client.name </h3>
 
-    }
-}else{
-    @main("Not Found"){
-        <h3>No client found</h3>
+        <p>CID: @client.cid</p>
+        @helper.form(action = routes.Clients.editClient(client.cid)) {
+            @helper.inputText(clientForm("cid"), 'style -> "display: none")
+            @helper.inputText(clientForm("name"))
+            @helper.inputDate(clientForm("birthdate"))
+            @helper.inputText(clientForm("homephone"))
+            @helper.inputText(clientForm("workphone"))
+            @helper.inputText(clientForm("streetAddress"))
+            @helper.inputText(clientForm("city"))
+            @helper.inputText(clientForm("province"))
+            @helper.inputText(clientForm("postalCode"))
+
+            <p><input type="submit" class="btn primary"
+            value='Edit Info'></p>
+        }
     }
 }
+
+

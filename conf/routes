@@ -23,6 +23,7 @@ GET     /offices/:oid              controllers.Offices.info(oid)
 GET     /user/                  controllers.Clients.list
 #Displays a specific user info using their unique cid
 GET     /user/:cid              controllers.Clients.info(cid)
+POST    /user/:cid              controllers.Clients.editClient(cid)
 
 # Client Creation page
 GET     /clientCreate/             controllers.Clients.newClient
