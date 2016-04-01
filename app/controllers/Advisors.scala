@@ -67,33 +67,53 @@ class Advisors extends Controller {
         BadRequest(views.html.advisors.form(formWithErrors))
       },
       advisor => {
-//        this.save(advisor)
-        Redirect(routes.Application.index())
-              //.flashing("success" -> "Contact saved!")
+        this.save(advisor)
+        Redirect(routes.Advisors.info(advisor.sin))
       }
     )
   }
 
   def newAdvisor = Action {
-    val dummyAdvisor = AdvisorForm("","","","","","","","")
+    val dummyAdvisor = AdvisorForm("000000001","",778,778,"","","","000000001")
     Ok(views.html.advisors.form(advisorForm.fill(dummyAdvisor)))
   }
 
   def save(form : AdvisorForm): Unit ={
-    // call db and save
-    Ok(views.html.nav())
+    Logger.debug(form.name)
+    val params = "'" + form.sin + "','" + form.name + "','" + form.workPhoneNumber.toString + "','" + form.homePhoneNumber.toString +
+                "','" + form.streetAddress + "','" + form.city + "','" + form.postalcode + "','" + form.reportsTo + "'"
+    val exec =  "INSERT INTO employee VALUES ( " + params + ")"
+    val conn = DB.getConnection()
+    try {
+      val stmt = conn.createStatement
+      stmt.execute(exec)
+    } finally {
+      conn.close()
+    }
+  }
+
+  def delete(sin : String): Unit ={
+    val exec =  "DELETE FROM employee WHERE sin ='" + sin + "'"
+    val conn = DB.getConnection()
+    try {
+      val stmt = conn.createStatement
+      stmt.execute(exec)
+    } finally {
+      conn.close()
+    }
+    Redirect(routes.Advisors.list())
   }
 
   private val advisorForm: Form[AdvisorForm] = Form(
     mapping(
-      "sin" -> nonEmptyText,
-      "name" -> text,
-      "workPhoneNumber" -> text,
-      "homePhoneNumber" -> text,
-      "streetAddress" ->   text,
-      "city" -> text,
-      "province" -> text,
-      "ReportsTo" -> text
+      "sin" -> nonEmptyText(9),
+      "name" -> nonEmptyText(0,20),
+      "workPhoneNumber" -> number,
+      "homePhoneNumber" -> number,
+      "streetAddress" ->   text(0,20),
+      "city" -> nonEmptyText(0,20),
+      "postalcode" -> nonEmptyText(7),
+      "ReportsTo" -> text(9)
     )(AdvisorForm.apply)(AdvisorForm.unapply)
   )
 

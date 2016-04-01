@@ -1,6 +1,6 @@
 package models
 
-case class AdvisorForm(sin: String, name: String, workPhoneNumber: String, homePhoneNumber: String,
-                  streetAddress: String, city: String, province: String, reportsTo: String) {
+case class AdvisorForm(sin: String, name: String, workPhoneNumber: Int, homePhoneNumber: Int,
+                  streetAddress: String, city: String, postalcode: String, reportsTo: String) {
 
 }
