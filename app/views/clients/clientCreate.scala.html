@@ -1,23 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Create Account</title>
-    </head>
+@(clientForm : Form[ClientForm])(implicit messages: Messages)
 
-    <body>
-        <form method="post" autocomplete="on">
-          Name (First and Last):<input type="text" name="name"><br>
-            Birthdate <input type="date" name="birthdate"><br>
-            Homephone <input type="number" name="homephone"><br>
-            Workphone <input type="number" name="workphone"><br>
-            Street Address <input type="text" name="streetAddress"><br>
-            City<input type="text" name="city"><br>
-            Province<input type="text" name="city"><br>
+@import helper._
 
+@helper.form(action = routes.Clients.saveClient) {
+    @helper.inputText(clientForm("cid"))
+    @helper.inputText(clientForm("name"))
+    @helper.inputDate(clientForm("birthdate"))
+    @helper.inputText(clientForm("homephone"))
+    @helper.inputText(clientForm("workphone"))
+    @helper.inputText(clientForm("streetAddress"))
+    @helper.inputText(clientForm("city"))
+    @helper.inputText(clientForm("province"))
+    @helper.inputText(clientForm("postalCode"))
 
-            <input type="submit">
-      </form>
-
-    </body>
-</html>
+    <p><input type="submit" class="btn primary"
+    value='Add'></p>
+}

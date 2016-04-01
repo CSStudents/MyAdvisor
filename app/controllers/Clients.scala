@@ -1,12 +1,15 @@
 package controllers
 
-import models.Client
+import models.{ClientForm, Client}
 import play.api.db.DB
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
 import play.api.data._
 import play.api.data.Forms._
 import java.util.Date
+import play.api.i18n.Messages.Implicits._
+
+import play.api.Logger
 
 class Clients extends Controller{
 
@@ -54,32 +57,51 @@ class Clients extends Controller{
     Ok(views.html.clients.info(client))
   }
 
-  case class ClientData(name: String, birthdate: Date,  homephone: Int, workphone: Int,
-                        streetAddress: String, city: String, province: String, postalCode: String)
-
-  val clientFormTuple = Form(
-    tuple(
-      "name" -> text,
-      "birthdate" -> date,
-      "homephone" -> number,
-      "workphone" -> number,
-      "streetAddress" -> text,
-      "city" -> text,
-      "province" -> text,
-      "postalCode" -> text
+  def saveClient = Action { implicit request =>
+    clientForm.bindFromRequest.fold(
+      formWithErrors => {
+        Logger.debug("inside error")
+        BadRequest(views.html.clients.clientCreate(formWithErrors))
+      },
+      client => {
+        this.save(client)
+        Redirect(routes.Clients.info(client.cid))
+      }
     )
+  }
+
+  def newClient = Action {
+    val dummyClient = ClientForm("","",null,0,0,"","","","")
+    Ok(views.html.clients.clientCreate(clientForm.fill(dummyClient)))
+  }
+
+  def save(form : ClientForm): Unit = {
+      val params = "'" + form.cid + "','" + form.name + "','" + form.birthdate + "','" + form.homephone.toString + "','" + form.workphone.toString +
+        "','" + form.streetAddress + "','" + form.city + "','" + form.province + "','" + form.postalCode + "'"
+      val exec =  "INSERT INTO client VALUES ( " + params + ")"
+      val conn = DB.getConnection()
+      try {
+        val stmt = conn.createStatement;
+        stmt.execute(exec)
+      } finally {
+        conn.close()
+      }
+  }
+
+
+  private val clientForm: Form[ClientForm] = Form(
+    mapping(
+      "cid" -> nonEmptyText(9),
+      "name" -> nonEmptyText(0,20),
+      "birthdate" -> date,
+      "homephone" -> number(0,999999999),
+      "workphone" -> number(0,999999999),
+      "streetAddress" -> text(0,20),
+      "city" -> text(0,20),
+      "province" -> text(0,20),
+      "postalCode" -> text(0,6)
+    ) (ClientForm.apply)(ClientForm.unapply)
   )
-
-  def submit = Action { implicit request =>
-    val (name, birthdate, homephone, workphone,
-    streetAddress, city, province, postalCode) = clientFormTuple.bindFromRequest.get
-    Ok("Hi %s".format(name))
-  }
-
-  def clientCreate = Action {
-    Ok(views.html.clients.clientCreate())
-  }
-
 
 
 }
