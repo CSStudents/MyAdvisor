@@ -5,4 +5,14 @@ package models
   */
 case class Service(sid : String, serviceTypeName : String, baseFee : Int, hourlyRate : Int, amountPaid : Int, TimeEntries : List[Timeentry]) {
 
+  object Service{
+
+
+  }
+
+
+  def isService(sid: String) : Boolean = {
+    true
+  }
+
 }

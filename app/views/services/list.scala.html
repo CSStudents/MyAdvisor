@@ -1,0 +1,19 @@
+@(services : List[Service])
+
+@main("Offices list"){
+  <h3>List of all Services</h3>
+  <table>
+    <tr>
+      <td>Service Type</td>
+      <td>baseFee</td>
+      <td>Hourly rate</td>
+    </tr>
+    @for(service <- services){
+      <tr>
+        <td><a href="@routes.Offices.info(service.sid)">@service.serviceTypeName</a></td>
+        <td>@service.baseFee </td>
+        <td>@service.hourlyRate </td>
+      </tr>
+    }
+  </table>
+}
