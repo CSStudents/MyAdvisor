@@ -1,7 +1,8 @@
+
 @(client : Client)
 
 @if(client != null){
-    @main("client id:" + client.cid) {
+    @main("client:" + client.name) {
         <h3>info for Client: @client.name </h3>
         <p>Birthdate: @client.birthDate </p>
         <p>Home phone number: @client.homePhoneNumber </p>

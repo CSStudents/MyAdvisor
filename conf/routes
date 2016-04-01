@@ -25,8 +25,8 @@ GET     /user/                  controllers.Clients.list
 GET     /user/:cid              controllers.Clients.info(cid)
 
 # Client Creation page
-GET     /clientCreate/             controllers.Clients.clientCreate
-POST    /clientCreate/             controllers.Clients.submit
+GET     /clientCreate/             controllers.Clients.newClient
+POST    /clientCreate/             controllers.Clients.saveClient
 
 
 
