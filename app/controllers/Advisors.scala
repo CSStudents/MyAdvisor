@@ -61,22 +61,22 @@ class Advisors extends Controller {
 
   }
 
+  def newAdvisor = Action {
+    val dummyAdvisor = AdvisorForm("000000001","",778,778,"","","","000000001")
+    Ok(views.html.advisors.advisorCreate(advisorForm.fill(dummyAdvisor)))
+  }
+
   def saveAdvisor = Action { implicit request =>
     advisorForm.bindFromRequest.fold(
       formWithErrors => {
         Logger.debug("inside error")
-        BadRequest(views.html.advisors.form(formWithErrors))
+        BadRequest(views.html.advisors.advisorCreate(formWithErrors))
       },
       advisor => {
         this.save(advisor)
         Redirect(routes.Advisors.info(advisor.sin))
       }
     )
-  }
-
-  def newAdvisor = Action {
-    val dummyAdvisor = AdvisorForm("000000001","",778,778,"","","","000000001")
-    Ok(views.html.advisors.form(advisorForm.fill(dummyAdvisor)))
   }
 
   def save(form : AdvisorForm): Unit ={

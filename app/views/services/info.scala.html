@@ -1,29 +1,34 @@
 @(service : Service, client : Tuple2[String, String], advisor : Tuple2[String, String])
 
-@if(service != null){
-  @main("Service id:" + service.sid) {
-    <h3>Info for service type: @service.serviceTypeName</h3>
-    <p>Provided by Advisor: <a href="@routes.Advisors.info(advisor._1.toString)">@advisor._2</a></p>
-    <p> Client in this service <a href="@routes.Clients.info(client._1)">@client._2 </a></p>
+    @if(service != null){
+        @main("Service id:" + service.sid) {
+            <h3>Info for service type: @service.serviceTypeName</h3>
+            <p>Provided by Advisor: <a href="@routes.Advisors.info(advisor._1.toString)">@advisor._2</a></p>
+            <p> Client in this service <a href="@routes.Clients.info(client._1)">@client._2 </a></p>
 
-    <p>Base fee: @service.baseFee </p>
-    <p>Hourly rate: @service.hourlyRate </p>
-    <p>amount Paid: @service.amountPaid </p>
+            <p>Base fee: @service.baseFee </p>
+            <p>Hourly rate: @service.hourlyRate </p>
+            <p>amount Paid: @service.amountPaid </p>
 
-   @if(service.TimeEntries == Nil) {
-      <p>This service has no time entries.</p>
-    } else {
-      <ol>Time entries recorded:
-        @for(timeentry <- service.TimeEntries) {
-            <li>Start Date: @timeentry.startDateEntry.toString . End Date: @timeentry.endDateTime.toString </li>
+            @if(service.TimeEntries == Nil) {
+                <p>This service has no time entries.</p>
+            } else {
+                <ol>Time entries recorded:
+                    @if(service.TimeEntries != null){
+                        @for(timeentry <- service.TimeEntries) {
+                            <li>Start Date: @timeentry.startDateEntry.toString . End Date: @timeentry.endDateTime.toString </li>
 
-      }
-      </ol>
+                        }
+                    }else{
+                        <p>No Time entries recorded for this service</p>
+                    }
+
+                </ol>
+            }
+
+        }
+    }else{
+        @main("Not found"){
+            <h3>Could not find this service</h3>
+        }
     }
-
-  }
-}else{
-  @main("Not found"){
-    <h3>Could not find this service</h3>
-  }
-}

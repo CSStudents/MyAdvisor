@@ -56,8 +56,8 @@ class Clients extends Controller{
     }
     val client : Client = data.asInstanceOf[Client]
     if(client != null){
-      val df = new SimpleDateFormat("yyyy-MM-dd");
-      val startDate = df.parse(client.birthDate);
+      val df = new SimpleDateFormat("yyyy-MM-dd")
+      val startDate = df.parse(client.birthDate)
 
       val clientInfo = ClientForm(client.cid.replaceAll("""(?m)\s+$""", ""),client.name.replaceAll("""(?m)\s+$""", ""),startDate,
         Long.valueOf(client.homePhoneNumber.replaceAll("""(?m)\s+$""", "")).longValue(),

@@ -7,7 +7,7 @@ GET     /                           controllers.Application.index
 
 #Displays all adivsors in a list
 GET     /advisors/                  controllers.Advisors.list
-#Displays form to submit as new Advisor
+#Displays advisorCreate to submit as new Advisor
 GET     /advisors/new                controllers.Advisors.newAdvisor
 #Post a new advisor
 POST    /advisors/new                 controllers.Advisors.saveAdvisor
@@ -32,6 +32,8 @@ GET     /clientCreate/             controllers.Clients.newClient
 POST    /clientCreate/             controllers.Clients.saveClient
 
 # Services
+GET     /services/new               controllers.Services.newService
+POST    /services/new               controllers.Services.saveService
 GET     /services/:sid             controllers.Services.info(sid)
 
 

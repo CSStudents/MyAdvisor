@@ -1,0 +1,16 @@
+@(serviceForm: Form[ServiceForm])(implicit messages: Messages)
+
+@import helper._
+
+@helper.form(action = routes.Services.saveService) {
+    @helper.inputText(serviceForm("sid"))
+    @helper.inputText(serviceForm("serviceTypeName"))
+    @helper.inputText(serviceForm("baseFee"))
+    @helper.inputText(serviceForm("hourlyRate"))
+    @helper.inputText(serviceForm("amountPaid"))
+    @helper.inputText(serviceForm("advisorSin"))
+    @helper.inputText(serviceForm("clientCid"))
+
+    <p><input type="submit" class="btn primary"
+    value='Add'></p>
+}
