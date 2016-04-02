@@ -1,6 +1,6 @@
 package controllers
 
-import models.{ClientForm, Client}
+import models.{Service, ClientForm, Client}
 import play.api.db.DB
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
@@ -66,13 +66,34 @@ class Clients extends Controller{
         client.province.replaceAll("""(?m)\s+$""", ""),
         client.postalCode.replaceAll("""(?m)\s+$""", ""))
 
-      Ok(views.html.clients.info(client, clientForm.fill(clientInfo)))
+      val services : List[Service] = getServicesByClient(cid)
+      Ok(views.html.clients.info(client, clientForm.fill(clientInfo), services))
     }
     else {
       val dummyClient = ClientForm("","",null,0,0,"","","","")
-      Ok(views.html.clients.info(client, clientForm.fill(dummyClient)))
+      Ok(views.html.clients.info(client, clientForm.fill(dummyClient), Nil))
     }
 
+  }
+
+  def getServicesByClient(cid : String) : List[Service] = {
+    var serviceList : List[Service] = List()
+    val conn = DB.getConnection()
+    try {
+      val stmt = conn.createStatement
+      val rs = stmt.executeQuery("SELECT service.sid, service.servicetypename, service.basefee, service.hourlyrate, service.amountpaid, provides_service_to.sin, employee.name " +
+        "FROM service, provides_service_to, employee " +
+        "WHERE service.sid = provides_service_to.sid and provides_service_to.sin = employee.sin  and provides_service_to.cid = '" + cid + "'")
+
+      while (rs.next) {
+        val service : Service = Service(rs.getString(1), rs.getString(2), rs.getString(3).toInt, rs.getString(4).toInt,rs.getString(5).toInt, Nil, rs.getString(6), rs.getString(7))
+        serviceList = service :: serviceList
+      }
+    } finally {
+      conn.close()
+    }
+
+    serviceList
   }
 
   def editClient(cid: String) = Action { implicit request =>
@@ -140,8 +161,8 @@ class Clients extends Controller{
       "cid" -> nonEmptyText(9),
       "name" -> nonEmptyText(0,20),
       "birthdate" -> date,
-      "homephone" -> number(0,999999999),
-      "workphone" -> number(0,999999999),
+      "homephone" -> longNumber,
+      "workphone" -> longNumber,
       "streetAddress" -> text(0,20),
       "city" -> text(0,20),
       "province" -> text(0,20),

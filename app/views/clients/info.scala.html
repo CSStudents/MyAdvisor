@@ -1,4 +1,4 @@
-@(client : Client, clientForm : Form[ClientForm] )(implicit messages: Messages)
+@(client : Client, clientForm : Form[ClientForm], services : List[Service] )(implicit messages: Messages)
 
 
 @if(client != null){
@@ -20,6 +20,13 @@
             <p><input type="submit" class="btn primary"
             value='Edit Info'></p>
         }
+
+        <h4>List of known services provided to this client</h4>
+        <ol type="1">
+        @for(service <- services){
+            <li> @service.serviceTypeName by Advisor: <a href="@routes.Advisors.info(service.sinOrcid)" >@service.name</a> (service id: <a href="@routes.Services.info(service.sid)">@service.sid </a>)</li>
+        }
+        </ol>
     }
 }
 

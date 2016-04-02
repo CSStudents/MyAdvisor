@@ -1,6 +1,6 @@
 package controllers
 
-import models.{AdvisorForm, Office, Advisor}
+import models.{Service, AdvisorForm, Office, Advisor}
 import play.api.db.DB
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
@@ -56,7 +56,8 @@ class Advisors extends Controller {
     }
     val advisor: Advisor = data.asInstanceOf[Advisor]
     advisor.branches = branchList
-    Ok(views.html.advisors.info(advisor))
+    val servicesProvided : List[Service] = getServiceByAdvisor(sin)
+    Ok(views.html.advisors.info(advisor, servicesProvided))
 
   }
 
@@ -119,6 +120,26 @@ class Advisors extends Controller {
 
   def lookBySin(sin : Int) : Boolean = {
     true
+  }
+
+  def getServiceByAdvisor(sin: String): List[Service] = {
+    var serviceList : List[Service] = List()
+    val conn = DB.getConnection()
+    try {
+      val stmt = conn.createStatement
+      val rs = stmt.executeQuery("SELECT service.sid, service.servicetypename, service.basefee, service.hourlyrate, service.amountpaid, provides_service_to.cid, client.name " +
+        "FROM service, provides_service_to, client " +
+        "WHERE service.sid = provides_service_to.sid and provides_service_to.cid = client.cid  and provides_service_to.sin = '" + sin + "'")
+
+      while (rs.next) {
+        val service : Service = Service(rs.getString(1), rs.getString(2), rs.getString(3).toInt, rs.getString(4).toInt,rs.getString(5).toInt, Nil, rs.getString(6), rs.getString(7))
+        serviceList = service :: serviceList
+      }
+    } finally {
+      conn.close()
+    }
+
+    serviceList
   }
 
 }

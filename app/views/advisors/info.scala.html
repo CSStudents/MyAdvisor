@@ -1,4 +1,4 @@
-@(advisor : Advisor)
+@(advisor : Advisor, services : List[Service])
 
 @main("Advisor: " + advisor.name){
     <h3>info for advisor: @advisor.name </h3>
@@ -11,4 +11,11 @@
     }
     </p>
     <p>Reports to: @advisor.reports_To </p>
+
+    <h4>List of known services provided</h4>
+    <ol type="1">
+    @for(service <- services){
+        <li> @service.serviceTypeName to <a href="@routes.Clients.info(service.sinOrcid)" >@service.name</a> (service id: <a href="@routes.Services.info(service.sid)">@service.sid </a>)</li>
+    }
+    </ol>
 }
