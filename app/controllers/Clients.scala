@@ -9,6 +9,7 @@ import play.api.data.Forms._
 import java.util.Date
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.lang.Long;
 import play.api.i18n.Messages.Implicits._
 
 import play.api.Logger
@@ -59,8 +60,8 @@ class Clients extends Controller{
       val startDate = df.parse(client.birthDate);
 
       val clientInfo = ClientForm(client.cid.replaceAll("""(?m)\s+$""", ""),client.name.replaceAll("""(?m)\s+$""", ""),startDate,
-        Integer.parseInt(client.homePhoneNumber.replaceAll("""(?m)\s+$""", "")),
-        Integer.parseInt(client.workPhoneNumber.replaceAll("""(?m)\s+$""", "")),
+        Long.valueOf(client.homePhoneNumber.replaceAll("""(?m)\s+$""", "")).longValue(),
+        Long.valueOf(client.workPhoneNumber.replaceAll("""(?m)\s+$""", "")).longValue(),
         client.streetAddress,
         client.city.replaceAll("""(?m)\s+$""", ""),
         client.province.replaceAll("""(?m)\s+$""", ""),
@@ -99,11 +100,9 @@ class Clients extends Controller{
   def editClient(cid: String) = Action { implicit request =>
     clientForm.bindFromRequest.fold(
       formWithErrors => {
-        Logger.debug("in the form with Errors!")
         BadRequest(views.html.clients.clientCreate(formWithErrors))
       },
       client => {
-        Logger.debug("in the success method!")
         this.edit(client, cid)
         Redirect(routes.Clients.info(client.cid))
       }
@@ -114,8 +113,7 @@ class Clients extends Controller{
     val params = "name= " + "'" + form.name + "'" + ", birthdate= " + "'" + form.birthdate + "'" + ", homephonenumber = " + form.homephone.toString +
     ", workphonenumber = " + form.workphone.toString + ", streetaddr = " + "'" + form.streetAddress + "'" + ", city = " + "'" + form.city + "'" +
       ", province = " + "'" + form.province + "'" + ", postalcode = " + "'" + form.postalCode + "'"
-    val exec =  "UPDATE client SET " + params + " WHERE cid = " + "'" + form.cid + "'" 
-    Logger.debug(s"Query=$exec")
+    val exec =  "UPDATE client SET " + params + " WHERE cid = " + "'" + form.cid + "'"
     val conn = DB.getConnection()
     try {
       val stmt = conn.createStatement;
@@ -136,6 +134,12 @@ class Clients extends Controller{
       }
     )
   }
+
+  def deleteClient(cid : String) = Action {
+    Logger.debug("YOU ARE IN DELETE CLIENT!")
+    Redirect(routes.Application.index())
+  }
+
 
   def newClient = Action {
     val dummyClient = ClientForm("","",null,0,0,"","","","")
