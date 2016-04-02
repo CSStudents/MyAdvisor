@@ -17,9 +17,12 @@
             @helper.inputText(clientForm("province"))
             @helper.inputText(clientForm("postalCode"))
 
-            <p><input type="submit" class="btn primary"
+            <p><input type="submit" class="btn btn-success btn-lg"
             value='Edit Info'></p>
         }
+
+        <a href="/userDelete/@client.cid" class="btn btn-primary btn-sm" role="button">Delete My Account</a>
+
 
         <h4>List of known services provided to this client</h4>
         <ol type="1">
@@ -27,9 +30,6 @@
             <li> @service.serviceTypeName by Advisor: <a href="@routes.Advisors.info(service.sinOrcid)" >@service.name</a> (service id: <a href="@routes.Services.info(service.sid)">@service.sid </a>)</li>
         }
         </ol>
-
-        <p><input type="submit" class="clickable"
-        value='Delete My Account' onclick=""></p>
 
     }
 }

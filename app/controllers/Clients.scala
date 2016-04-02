@@ -1,6 +1,6 @@
 package controllers
 
-import models.{Service, ClientForm, Client}
+import models.{Service, ClientForm, ClientDeleteForm, Client}
 import play.api.db.DB
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
@@ -135,11 +135,6 @@ class Clients extends Controller{
     )
   }
 
-  def deleteClient(cid : String) = Action {
-    Logger.debug("YOU ARE IN DELETE CLIENT!")
-    Redirect(routes.Application.index())
-  }
-
 
   def newClient = Action {
     val dummyClient = ClientForm("","",null,0,0,"","","","")
@@ -159,6 +154,31 @@ class Clients extends Controller{
       }
   }
 
+  def delete(cid: String) = Action {
+      Ok(views.html.clients.deleteClient(cid, clientDeleteForm))
+  }
+
+  def deleteClient(cid: String) = Action {
+
+    val exec =  "DELETE FROM client WHERE cid= " + "'" + cid + "'"
+    Logger.debug(s"Statement=$exec")
+    val conn = DB.getConnection()
+    try {
+      val stmt = conn.createStatement;
+      stmt.execute(exec)
+    } finally {
+      conn.close()
+    }
+
+    Redirect(routes.Application.index)
+  }
+
+  private val clientDeleteForm: Form[ClientDeleteForm] = Form(
+    mapping(
+      "cid" -> text
+    ) (ClientDeleteForm.apply)(ClientDeleteForm.unapply)
+  )
+
 
   private val clientForm: Form[ClientForm] = Form(
     mapping(
@@ -169,7 +189,7 @@ class Clients extends Controller{
       "workphone" -> longNumber,
       "streetAddress" -> text(0,20),
       "city" -> text(0,20),
-      "province" -> text(0,20),
+      "province" -> text(0,2),
       "postalCode" -> text(0,6)
     ) (ClientForm.apply)(ClientForm.unapply)
   )

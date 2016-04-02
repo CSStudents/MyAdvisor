@@ -24,8 +24,10 @@ GET     /user/                  controllers.Clients.list
 #Displays a specific user info using their unique cid
 GET     /user/:cid              controllers.Clients.info(cid)
 POST    /user/:cid              controllers.Clients.editClient(cid)
-POST    /user/:cid              controllers.Clients.deleteClient(cid)
 
+#Displays a specific user delete page using their unqiue cid
+GET     /userDelete/:cid              controllers.Clients.delete(cid)
+POST    /userDelete/:cid              controllers.Clients.deleteClient(cid)
 
 # Client Creation page
 GET     /clientCreate/             controllers.Clients.newClient

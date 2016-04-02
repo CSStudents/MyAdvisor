@@ -1,0 +1,20 @@
+@(clientCid : String, clientDeleteForm : Form[ClientDeleteForm])(implicit messages: Messages)
+
+
+    @main("Delete My Account") {
+
+    <p>Are you sure you want to delete your account, client #:  <b>@clientCid</b>?</p>
+
+        @helper.form(action = routes.Clients.deleteClient(clientCid)) {
+            @helper.inputText(clientDeleteForm("cid"), 'style -> "display: none", '_label -> "")
+
+            <p><input type="submit" class="btn btn-success btn-sm"
+            value='Yes'></p>
+        }
+
+        <a href="/user/@clientCid" class="btn btn-primary btn-sm" role="button">No</a>
+
+
+    }
+
+
