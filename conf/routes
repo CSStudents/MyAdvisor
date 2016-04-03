@@ -37,6 +37,8 @@ POST    /clientCreate/             controllers.Clients.saveClient
 
 # Services
 GET     /services/new               controllers.Services.newService
+GET     /services/new/adv               controllers.Services.newServiceByAdvisor(sin)
+GET     /services/new/cli           controllers.Services.newServiceByClient(cid)
 POST    /services/new               controllers.Services.saveService
 GET     /services/:sid             controllers.Services.info(sid)
 

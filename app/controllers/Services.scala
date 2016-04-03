@@ -78,6 +78,16 @@ class Services extends Controller{
     Ok(views.html.services.serviceCreate(serviceForm.fill(emptyServiceForm)))
   }
 
+  def newServiceByClient(cid : String) = Action {
+    val clientServiceForm = ServiceForm(NextServiceNumber(),"",100,50,0,"",cid)
+    Ok(views.html.services.serviceCreate(serviceForm.fill(clientServiceForm)))
+  }
+
+  def newServiceByAdvisor(sin : String) = Action{
+    val advisorServiceForm = ServiceForm(NextServiceNumber(),"",100,50,0,sin,"")
+    Ok(views.html.services.serviceCreate(serviceForm.fill(advisorServiceForm)))
+  }
+
   def saveService = Action { implicit request =>
     serviceForm.bindFromRequest.fold(
       formWithErrors => {

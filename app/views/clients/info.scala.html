@@ -30,6 +30,7 @@
             <li> @service.serviceTypeName by Advisor: <a href="@routes.Advisors.info(service.sinOrcid)" >@service.name</a> (service id: <a href="@routes.Services.info(service.sid)">@service.sid </a>)</li>
         }
         </ol>
+        <a href="@routes.Services.newServiceByClient(client.cid)" class="btn btn-success btn-lg" role="button"> Request a service </a>
 
     }
 }

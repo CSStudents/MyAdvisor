@@ -18,4 +18,5 @@
         <li> @service.serviceTypeName to <a href="@routes.Clients.info(service.sinOrcid)" >@service.name</a> (service id: <a href="@routes.Services.info(service.sid)">@service.sid </a>)</li>
     }
     </ol>
+    <a href="@routes.Services.newServiceByAdvisor(advisor.sin)" class="btn btn-success btn-lg" role="button"> Create service </a>
 }
