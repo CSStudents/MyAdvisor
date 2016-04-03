@@ -1,0 +1,15 @@
+@(credentials : Form[Tuple2[String,String]], info : String, admin : Boolean)(implicit messages: Messages)
+
+@import helper._
+
+
+@helper.form(action = routes.Application.parseCredentials(admin)) {
+
+    <p>@info</p>
+
+    @helper.inputText(credentials("username"))
+    @helper.inputText(credentials("id"))
+
+    <p><input type="submit" class="btn primary"
+    value='input'></p>
+}

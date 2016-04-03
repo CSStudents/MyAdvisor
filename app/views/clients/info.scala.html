@@ -1,4 +1,4 @@
-@(client : Client, clientForm : Form[ClientForm], services : List[Service] )(implicit messages: Messages)
+@(client : Client, clientForm : Form[ClientForm], services : List[Service] )(implicit messages: Messages, session : Session)
 
 
 @if(client != null){

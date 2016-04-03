@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.Application
 import models.{Service, ClientForm, ClientDeleteForm, Client}
 import play.api.db.DB
 import play.api.mvc.{Action, Controller}
@@ -7,16 +8,17 @@ import play.api.Play.current
 import play.api.data._
 import play.api.data.Forms._
 import java.util.Date
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.lang.Long;
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.lang.Long
 import play.api.i18n.Messages.Implicits._
 
-import play.api.Logger
+import play.api.{Application, Logger}
 
 class Clients extends Controller{
 
   def list = Action {
+
     var clientList : List[Client] = List()
     val conn = DB.getConnection()
     try {
@@ -34,7 +36,7 @@ class Clients extends Controller{
     Ok(views.html.clients.list(clientList))
   }
 
-  def info(cid: String) = Action {
+  def info(cid: String) = Action { implicit request =>
     var branchList : List[String] = List()
     var data : Any = null
     val exec = "SELECT name, birthdate, homephonenumber, workphonenumber, streetaddr, city, province, postalcode " +
