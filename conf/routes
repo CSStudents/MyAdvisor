@@ -7,9 +7,11 @@ GET     /                           controllers.Application.index
 
 #Displays all adivsors in a list
 GET     /advisors/                  controllers.Advisors.list
-#Displays advisorCreate to submit as new Advisor
+#Searches through advisors and their services
+GET     /advisors/query/             controllers.Advisors.filterList(q)
+POST    /advisors/query/             controllers.Advisors.parseQuery
+#Displays a form to submit as new Advisor
 GET     /advisors/new                controllers.Advisors.newAdvisor
-#Post a new advisor
 POST    /advisors/new                 controllers.Advisors.saveAdvisor
 #Displays a specific advisor info
 GET     /advisors/:sin              controllers.Advisors.info(sin)
@@ -21,7 +23,7 @@ GET     /offices/:oid              controllers.Offices.info(oid)
 
 #Displays all users in a list -- need to restrict access to certain advisors on login
 GET     /user/                  controllers.Clients.list
-#Displays a specific user info using their unique cid
+#Displays a specific user info using their unique cid, allows editing
 GET     /user/:cid              controllers.Clients.info(cid)
 POST    /user/:cid              controllers.Clients.editClient(cid)
 
@@ -37,8 +39,6 @@ POST    /clientCreate/             controllers.Clients.saveClient
 GET     /services/new               controllers.Services.newService
 POST    /services/new               controllers.Services.saveService
 GET     /services/:sid             controllers.Services.info(sid)
-
-
 
 
 # Map static resources from the /public folder to the /assets URL path

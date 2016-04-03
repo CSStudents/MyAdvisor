@@ -32,6 +32,40 @@ class Advisors extends Controller {
     Ok(views.html.advisors.list(advisorsList))
   }
 
+  def parseQuery = Action{ implicit request =>
+    queryForm.bindFromRequest.fold(
+      formWithErrors => {
+        Logger.debug("form with errors")
+        BadRequest(views.html.advisors.filteredList(Nil, "", formWithErrors))
+      },
+      query => {
+        Redirect(routes.Advisors.filterList(query._1))
+      }
+    )
+  }
+
+  def filterList(serviceTypeName : String) = Action{
+    var advisorsList : List[Advisor] = List()
+    val conn = DB.getConnection()
+    try {
+      val stmt = conn.createStatement
+      //division query
+      val rs = stmt.executeQuery("select employee.sin, name, servicetypename from employee, offers_service where employee.sin = offers_service.sin " +
+        "EXCEPT (select employee.sin, name, servicetypename from offers_service, employee where employee.sin = offers_service.sin " +
+        "EXCEPT (select employee.sin, name, servicetypename from employee, offers_service where employee.sin = offers_service.sin and servicetypename LIKE '%" + serviceTypeName + "%')) ORDER BY name;")
+
+      while (rs.next) {
+        //pass the serviceTypeName on the streetAddress Value... Im not making a separate object just for the join table
+        val advisor : Advisor = Advisor(rs.getString(1), rs.getString(2), "", "", rs.getString(3), "", "", "", Nil)
+        advisorsList = advisor :: advisorsList
+      }
+    } finally {
+      conn.close()
+    }
+    val query : Tuple1[String] = Tuple1(serviceTypeName)
+    Ok(views.html.advisors.filteredList(advisorsList, serviceTypeName, queryForm.fill(query)))
+  }
+
   def info(sin: String) = Action {
     var branchList : List[String] = List()
     var data : Any = null
@@ -116,6 +150,12 @@ class Advisors extends Controller {
       "postalcode" -> nonEmptyText(7),
       "ReportsTo" -> text(9)
     )(AdvisorForm.apply)(AdvisorForm.unapply)
+  )
+
+  private val queryForm: Form[Tuple1[String]] = Form(
+    mapping(
+      "query" -> text
+    )(Tuple1.apply)(Tuple1.unapply)
   )
 
   def lookBySin(sin : Int) : Boolean = {

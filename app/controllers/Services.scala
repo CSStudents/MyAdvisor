@@ -29,7 +29,7 @@ class Services extends Controller{
     try {
       val stmt = conn.createStatement
 
-      val pokeQuery = stmt.executeQuery("select * from timeentry where sid = '" + sid + "'")
+      val pokeQuery = stmt.executeQuery("select * from timeentry where sid = '" +   sid + "'")
       var hasTimeEntries : Boolean = false
       while(pokeQuery.next){
         hasTimeEntries = true

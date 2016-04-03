@@ -1,7 +1,8 @@
-@(advisors : List[Advisor])
+@(advisors : List[Advisor])(implicit messages: Messages)
 
 @main("Advisor list"){
     <h3>List of Advisors</h3>
+    <a href="@routes.Advisors.filterList("")" class="btn btn-success btn-lg" role="button">Search for an advisor...</a>
     <table>
         <tr>
             <td>Name</td>

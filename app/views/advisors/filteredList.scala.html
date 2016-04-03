@@ -1,0 +1,24 @@
+@(advisors : List[Advisor], serviceTypeName : String, query : Form[Tuple1[String]])(implicit messages: Messages)
+
+@import helper._
+
+@main("Advisor list"){
+  <h3>Query through advisors offering the service you need</h3>
+    @helper.form(action = routes.Advisors.parseQuery) {
+        @helper.inputText(query("query"))
+        <p><input type="submit" class="btn primary"
+        value='search'></p>
+    }
+  <table>
+    <tr>
+      <td>Name</td>
+      <td>Service offered</td>
+    </tr>
+    @for(advisor <- advisors){
+      <tr>
+        <td><a href="@routes.Advisors.info(advisor.sin)">@advisor.name</a></td>
+        <td>@advisor.streetAddress </td>
+      </tr>
+    }
+  </table>
+}
