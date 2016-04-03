@@ -161,7 +161,6 @@ class Clients extends Controller{
   def deleteClient(cid: String) = Action {
 
     val exec =  "DELETE FROM client WHERE cid= " + "'" + cid + "'"
-    Logger.debug(s"Statement=$exec")
     val conn = DB.getConnection()
     try {
       val stmt = conn.createStatement;

@@ -14,7 +14,8 @@ POST    /advisors/query/             controllers.Advisors.parseQuery
 GET     /advisors/new                controllers.Advisors.newAdvisor
 POST    /advisors/new                 controllers.Advisors.saveAdvisor
 #Displays a specific advisor info
-GET     /advisors/:sin              controllers.Advisors.info(sin)
+GET     /advisors/:sin                      controllers.Advisors.info(sin)
+GET     /advisors/:sin/:choice              controllers.Advisors.maxMinCalc(sin, choice)
 
 #Displays all offices in a list
 GET     /offices/                  controllers.Offices.list
