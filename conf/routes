@@ -5,6 +5,9 @@
 # Home page
 GET     /                           controllers.Application.index
 
+GET     /login                      controllers.Application.login
+POST    /login                      controllers.Application.parseCredentials
+
 #Displays all adivsors in a list
 GET     /advisors/                  controllers.Advisors.list
 #Searches through advisors and their services

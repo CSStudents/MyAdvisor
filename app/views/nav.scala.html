@@ -1,14 +1,22 @@
+@()(implicit session : Session)
+
 @main("welcome") {
   <div class="container">
     <div class="page-header">
       <h1>Welcome to MyAdvisor</h1>
+        @if(session.get("id").isDefined){
+            <p>Hi @session.get("username") </p>
+        }else{
+            <p>You are not logged in</p>
+        }
+
     </div>
     <div class="jumbotron">
       <h2>About MyAdvisor</h2>
 
       <p>Explain info about myAdvisor</p>
 
-      <a href="#" class="btn btn-default btn-lg" role="button">Login</a>
+      <a href="@routes.Application.login()" class="btn btn-default btn-lg" role="button">Login</a>
 
       <a href="/clientCreate/" class="btn btn-success btn-lg" role="button">Create Account</a>
       <a href="@routes.Services.newService()" class="btn btn-success btn-lg"> Request a new Service </a>
