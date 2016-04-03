@@ -18,8 +18,8 @@ class Application extends Controller {
   var id : String = ""
 
   def index = Action { implicit request =>
-    val username = request.session.get("username").get
-    val id = request.session.get("id").get
+    val username = request.session.get("username").getOrElse("is empty")
+    val id = request.session.get("id").getOrElse("is empty")
     Logger.debug("username in session : " + username )
     Logger.debug("id of user : " + id)
 
