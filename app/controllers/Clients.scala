@@ -59,13 +59,30 @@ class Clients extends Controller{
       val df = new SimpleDateFormat("yyyy-MM-dd")
       val startDate = df.parse(client.birthDate)
 
-      val clientInfo = ClientForm(client.cid.replaceAll("""(?m)\s+$""", ""),client.name.replaceAll("""(?m)\s+$""", ""),startDate,
-        Long.valueOf(client.homePhoneNumber.replaceAll("""(?m)\s+$""", "")).longValue(),
-        Long.valueOf(client.workPhoneNumber.replaceAll("""(?m)\s+$""", "")).longValue(),
+      var clientInfo: ClientForm = null;
+      val longValue: Long = 0L;
+
+      if (client.homePhoneNumber == null || client.workPhoneNumber == null) {
+        clientInfo = ClientForm(client.cid.replaceAll("""(?m)\s+$""", ""),client.name.replaceAll("""(?m)\s+$""", ""),startDate,
+          longValue,
+          longValue,
         client.streetAddress,
         client.city.replaceAll("""(?m)\s+$""", ""),
         client.province.replaceAll("""(?m)\s+$""", ""),
         client.postalCode.replaceAll("""(?m)\s+$""", ""))
+
+      }
+
+      else {
+        clientInfo = ClientForm(client.cid.replaceAll("""(?m)\s+$""", ""),client.name.replaceAll("""(?m)\s+$""", ""),startDate,
+          Long.valueOf(client.homePhoneNumber.replaceAll("""(?m)\s+$""", "")).longValue(),
+          Long.valueOf(client.workPhoneNumber.replaceAll("""(?m)\s+$""", "")).longValue(),
+          client.streetAddress,
+          client.city.replaceAll("""(?m)\s+$""", ""),
+          client.province.replaceAll("""(?m)\s+$""", ""),
+          client.postalCode.replaceAll("""(?m)\s+$""", ""))
+      }
+
 
       val services : List[Service] = getServicesByClient(cid)
       Ok(views.html.clients.info(client, clientForm.fill(clientInfo), services))
