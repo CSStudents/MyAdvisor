@@ -1,6 +1,9 @@
 @(clients : List[Client])
 
 @main("Clients list"){
+    <form action="@routes.Application.index" method="get">
+        <button class="btn btn-link">Home</button>
+    </form>
   <h3>List of Clients</h3>
     <table>
         <tr>

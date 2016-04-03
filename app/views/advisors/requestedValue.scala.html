@@ -1,5 +1,8 @@
 @(requestedValueChoice: String, requestedValue : String)
 
-@main("Advisor: ") {
+@main("Advisor") {
+      <form action="@routes.Application.index" method="get">
+            <button class="btn btn-link">Home</button>
+      </form>
       <p>The average @requestedValueChoice amount payed is: @requestedValue</p>
 }

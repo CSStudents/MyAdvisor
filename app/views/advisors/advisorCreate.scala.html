@@ -2,6 +2,9 @@
 
     @import helper._
 
+    <form action="@routes.Application.index" method="get">
+        <button class="btn btn-link">Home</button>
+    </form>
     @helper.form(action = routes.Advisors.saveAdvisor) {
         @helper.inputText(advisorForm("sin"))
         @helper.inputText(advisorForm("name"))

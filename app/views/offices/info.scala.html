@@ -2,6 +2,9 @@
 
 @if(office != null){
     @main("Office id:" + office.oid) {
+        <form action="@routes.Application.index" method="get">
+            <button class="btn btn-link">Home</button>
+        </form>
         <h3>info for Office: @office.streetAddress , @office.city </h3>
         <p>Work Phone Number: @office.mainOfficeNumber</p>
 
@@ -19,6 +22,9 @@
     }
 }else{
     @main("No office yet"){
+        <form action="@routes.Application.index" method="get">
+            <button class="btn btn-link">Home</button>
+        </form>
         <h3>No office built yet at this location</h3>
     }
 }

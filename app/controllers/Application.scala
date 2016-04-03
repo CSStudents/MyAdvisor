@@ -18,22 +18,27 @@ class Application extends Controller {
   var id : String = ""
 
   def index = Action { implicit request =>
-    val username = request.session.get("username").getOrElse("is empty")
-    val id = request.session.get("id").getOrElse("is empty")
+    val username = request.session.get("username").orNull
+    val id = request.session.get("id").orNull
     Logger.debug("username in session : " + username )
     Logger.debug("id of user : " + id)
 
-    if(id.isEmpty){
+    if(id == null){
       Logger.debug("is empty")
+      Ok(views.html.nav()).withNewSession
     }else{
       Logger.debug("not empty")
+      Ok(views.html.nav()).withSession("username" -> username, "id" -> id)
     }
-    Ok(views.html.nav()).withSession("username" -> username, "id" -> id)
   }
 
   def login(admin : Boolean) = Action {
     val data : Tuple2[String, String] = Tuple2("", "")
     Ok(views.html.login.input(credentials.fill(data), "Please input credentials", admin))
+  }
+
+  def logout = Action { implicit request =>
+    Redirect(routes.Application.index()).withNewSession
   }
 
   def authenticate(credentials :Tuple2[String, String]) = Action { implicit request =>

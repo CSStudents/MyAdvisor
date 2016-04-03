@@ -1,6 +1,9 @@
 @(advisor : Advisor, services : List[Service])(content : Html)
 
 @main("Advisor: " + advisor.name){
+    <form action="@routes.Application.index" method="get">
+        <button class="btn btn-link">Home</button>
+        </form>
     <h3>info for advisor: @advisor.name </h3>
     <p>Work Phone Number: @advisor.workPhoneNumber </p>
     <p>Location: @advisor.streetAddress </p>

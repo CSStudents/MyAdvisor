@@ -1,6 +1,9 @@
 @(services : List[Service])
 
 @main("Offices list"){
+  <form action="@routes.Application.index" method="get">
+    <button class="btn btn-link">Home</button>
+  </form>
   <h3>List of all Services</h3>
   <table>
     <tr>

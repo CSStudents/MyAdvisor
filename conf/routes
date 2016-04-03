@@ -5,8 +5,10 @@
 # Home page
 GET     /                           controllers.Application.index
 
+# Log in pages
 GET     /login                      controllers.Application.login(b : Boolean)
 POST    /login                      controllers.Application.parseCredentials(b : Boolean)
+GET     /logout                     controllers.Application.logout
 
 #Displays all adivsors in a list
 GET     /advisors/                  controllers.Advisors.list
