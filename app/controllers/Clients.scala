@@ -159,7 +159,7 @@ class Clients extends Controller{
   }
 
   def save(form : ClientForm): Boolean = {
-    if(clientExists(form.cid)){
+    if(!clientExists(form.cid)){
       val params = "'" + form.cid + "','" + form.name + "','" + form.birthdate + "','" + form.homephone.toString + "','" + form.workphone.toString +
         "','" + form.streetAddress + "','" + form.city + "','" + form.province + "','" + form.postalCode + "'"
       val exec =  "INSERT INTO client VALUES ( " + params + ")"
