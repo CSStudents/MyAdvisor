@@ -178,14 +178,9 @@ class Advisors extends Controller {
 
   private val queryForm: Form[Tuple1[String]] = Form(
     mapping(
-      "Search by service offered" -> text
+      "query" -> text
     )(Tuple1.apply)(Tuple1.unapply)
   )
-
-
-  def lookBySin(sin: Int): Boolean = {
-    true
-  }
 
   def getServiceByAdvisor(sin: String): List[Service] = {
     var serviceList: List[Service] = List()

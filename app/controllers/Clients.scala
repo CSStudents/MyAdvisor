@@ -21,7 +21,7 @@ class Clients extends Controller{
       val rs = stmt.executeQuery("SELECT cid, name FROM client")
       while (rs.next) {
         val client : Client = Client(rs.getString(1), rs.getString(2),
-            "BirthDatePlaceHolder", "homePhonNumPlaceholder", "workPhonNumPlaceholder", "addressPlaceHolder", "cityPlaceHolder", "province", "postalCode")
+          "BirthDatePlaceHolder", "homePhonNumPlaceholder", "workPhonNumPlaceholder", "addressPlaceHolder", "cityPlaceHolder", "province", "postalCode")
         clientList = client :: clientList
 
       }
@@ -35,8 +35,8 @@ class Clients extends Controller{
     var branchList : List[String] = List()
     var data : Any = null
     val exec = "SELECT name, birthdate, homephonenumber, workphonenumber, streetaddr, city, province, postalcode " +
-                "FROM client " +
-                "WHERE client.cid = '" + cid + "'"
+      "FROM client " +
+      "WHERE client.cid = '" + cid + "'"
     val conn = DB.getConnection()
     try {
       val stmt = conn.createStatement
@@ -63,10 +63,10 @@ class Clients extends Controller{
         clientInfo = ClientForm(client.cid.replaceAll("""(?m)\s+$""", ""),client.name.replaceAll("""(?m)\s+$""", ""),startDate,
           longValue,
           longValue,
-        client.streetAddress,
-        client.city.replaceAll("""(?m)\s+$""", ""),
-        client.province.replaceAll("""(?m)\s+$""", ""),
-        client.postalCode.replaceAll("""(?m)\s+$""", ""))
+          client.streetAddress,
+          client.city.replaceAll("""(?m)\s+$""", ""),
+          client.province.replaceAll("""(?m)\s+$""", ""),
+          client.postalCode.replaceAll("""(?m)\s+$""", ""))
 
       }
 
@@ -114,7 +114,7 @@ class Clients extends Controller{
   def editClient(cid: String) = Action { implicit request =>
     clientForm.bindFromRequest.fold(
       formWithErrors => {
-        BadRequest(views.html.clients.clientCreate(formWithErrors))
+        BadRequest(views.html.clients.clientCreate(formWithErrors, "Error: see below"))
       },
       client => {
         this.edit(client, cid)
@@ -125,7 +125,7 @@ class Clients extends Controller{
 
   def edit(form : ClientForm, cid : String): Unit = {
     val params = "name= " + "'" + form.name + "'" + ", birthdate= " + "'" + form.birthdate + "'" + ", homephonenumber = " + form.homephone.toString +
-    ", workphonenumber = " + form.workphone.toString + ", streetaddr = " + "'" + form.streetAddress + "'" + ", city = " + "'" + form.city + "'" +
+      ", workphonenumber = " + form.workphone.toString + ", streetaddr = " + "'" + form.streetAddress + "'" + ", city = " + "'" + form.city + "'" +
       ", province = " + "'" + form.province + "'" + ", postalcode = " + "'" + form.postalCode + "'"
     val exec =  "UPDATE client SET " + params + " WHERE cid = " + "'" + form.cid + "'"
     val conn = DB.getConnection()
@@ -140,11 +140,14 @@ class Clients extends Controller{
   def saveClient = Action { implicit request =>
     clientForm.bindFromRequest.fold(
       formWithErrors => {
-        BadRequest(views.html.clients.clientCreate(formWithErrors))
+        BadRequest(views.html.clients.clientCreate(formWithErrors, "Error: see below"))
       },
       client => {
-        this.save(client)
-        Redirect(routes.Clients.info(client.cid))
+        if(save(client)){
+          Redirect(routes.Clients.info(client.cid))
+        }else{
+          BadRequest(views.html.clients.clientCreate(clientForm.fill(client), "Error: cid already exists"))
+        }
       }
     )
   }
@@ -152,24 +155,29 @@ class Clients extends Controller{
 
   def newClient = Action {
     val dummyClient = ClientForm("","",null,0,0,"","","","")
-    Ok(views.html.clients.clientCreate(clientForm.fill(dummyClient)))
+    Ok(views.html.clients.clientCreate(clientForm.fill(dummyClient), "Please fill the required fields below"))
   }
 
-  def save(form : ClientForm): Unit = {
+  def save(form : ClientForm): Boolean = {
+    if(clientExists(form.cid)){
       val params = "'" + form.cid + "','" + form.name + "','" + form.birthdate + "','" + form.homephone.toString + "','" + form.workphone.toString +
         "','" + form.streetAddress + "','" + form.city + "','" + form.province + "','" + form.postalCode + "'"
       val exec =  "INSERT INTO client VALUES ( " + params + ")"
       val conn = DB.getConnection()
       try {
-        val stmt = conn.createStatement;
+        val stmt = conn.createStatement
         stmt.execute(exec)
       } finally {
         conn.close()
       }
+      true
+    }else{
+      false
+    }
   }
 
   def delete(cid: String) = Action {
-      Ok(views.html.clients.deleteClient(cid, clientDeleteForm))
+    Ok(views.html.clients.deleteClient(cid, clientDeleteForm))
   }
 
   def deleteClient(cid: String) = Action {
@@ -205,6 +213,23 @@ class Clients extends Controller{
       "postalCode" -> text(0,6)
     ) (ClientForm.apply)(ClientForm.unapply)
   )
+
+  def clientExists(cid : String) : Boolean = {
+    val conn = DB.getConnection()
+    val exec = "select * from client where cid = '" + cid + "'"
+    var result : Boolean = false
+    try {
+      val stmt = conn.createStatement
+      val rs = stmt.executeQuery(exec)
+      while (rs.next) {
+        //something found
+        result = true
+      }
+    } finally {
+      conn.close()
+    }
+    result
+  }
 
 
 }
