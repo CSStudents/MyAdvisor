@@ -1,19 +1,14 @@
 package controllers
 
-import controllers.Application
 import models.{Service, ClientForm, ClientDeleteForm, Client}
 import play.api.db.DB
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
 import play.api.data._
 import play.api.data.Forms._
-import java.util.Date
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.lang.Long
 import play.api.i18n.Messages.Implicits._
-
-import play.api.{Application, Logger}
 
 class Clients extends Controller{
 
@@ -178,17 +173,16 @@ class Clients extends Controller{
   }
 
   def deleteClient(cid: String) = Action {
-
-    val exec =  "DELETE FROM client WHERE cid= " + "'" + cid + "'"
+    val exec =  "DELETE FROM provides_service_to WHERE cid= '" + cid + "'; DELETE FROM client WHERE cid= " + "'" + cid + "'"
     val conn = DB.getConnection()
     try {
-      val stmt = conn.createStatement;
+      val stmt = conn.createStatement
       stmt.execute(exec)
     } finally {
       conn.close()
     }
 
-    Redirect(routes.Application.index)
+    Redirect(routes.Application.index).withNewSession
   }
 
   private val clientDeleteForm: Form[ClientDeleteForm] = Form(

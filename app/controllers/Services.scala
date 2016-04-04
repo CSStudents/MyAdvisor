@@ -94,9 +94,9 @@ class Services extends Controller{
         Logger.debug("inside error")
         BadRequest(views.html.services.serviceCreate(formWithErrors))
       },
-      advisor => {
-        this.save(advisor)
-        Redirect(routes.Services.info(advisor.sid))
+      service => {
+        this.save(service)
+        Redirect(routes.Services.info(service.sid))
       }
     )
   }

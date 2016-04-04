@@ -68,21 +68,38 @@ class Advisors extends Controller {
   def info(sin: String) = Action {
     var branchList: List[String] = List()
     var data: Any = null
-    val exec = "SELECT employee.sin, name, workPhoneNumber, streetAddress, city, reports_To, dptName " +
-      "FROM employee, works_in " +
-      "WHERE employee.sin = works_in.sin and employee.sin = '" + sin + "'"
     val conn = DB.getConnection()
     try {
       val stmt = conn.createStatement
-      val rs = stmt.executeQuery(exec)
-      while (rs.next) {
-        if (data == null) {
-          data = Advisor(rs.getString(1), rs.getString(2), rs.getString(3), "", rs.getString(4), rs.getString(5), "", rs.getString(6), Nil)
 
+      val pokeQuery = stmt.executeQuery("select * from works_in where sin = '" +   sin + "'")
+      var hasBranches : Boolean = false
+      while(pokeQuery.next){
+        hasBranches = true
+      }
+
+      if(hasBranches){
+        val exec = "SELECT employee.sin, name, workPhoneNumber, streetAddress, city, reports_To, dptName " +
+          "FROM employee, works_in " +
+          "WHERE employee.sin = works_in.sin and employee.sin = '" + sin + "'"
+        val rs = stmt.executeQuery(exec)
+        while (rs.next) {
+          if (data == null) {
+            data = Advisor(rs.getString(1), rs.getString(2), rs.getString(3), "", rs.getString(4), rs.getString(5), "", rs.getString(6), Nil)
+          }
+          branchList = rs.getString(7) :: branchList
         }
 
-        branchList = rs.getString(7) :: branchList
-
+      }else{
+        val exec = "SELECT sin, name, workPhoneNumber, streetAddress, city, reports_To " +
+          "FROM employee " +
+          "WHERE sin = '" + sin + "'"
+        val rs = stmt.executeQuery(exec)
+        while (rs.next) {
+          if (data == null) {
+            data = Advisor(rs.getString(1), rs.getString(2), rs.getString(3), "", rs.getString(4), rs.getString(5), "", rs.getString(6), Nil)
+          }
+        }
       }
     } finally {
       conn.close()
@@ -96,32 +113,41 @@ class Advisors extends Controller {
 
   def newAdvisor = Action {
     val dummyAdvisor = AdvisorForm("000000001", "", 778, 778, "", "", "", "000000001")
-    Ok(views.html.advisors.advisorCreate(advisorForm.fill(dummyAdvisor)))
+    Ok(views.html.advisors.advisorCreate(advisorForm.fill(dummyAdvisor), "Please fill all required values"))
   }
 
   def saveAdvisor = Action { implicit request =>
     advisorForm.bindFromRequest.fold(
       formWithErrors => {
         Logger.debug("inside error")
-        BadRequest(views.html.advisors.advisorCreate(formWithErrors))
+        BadRequest(views.html.advisors.advisorCreate(formWithErrors, "Error: see below"))
       },
       advisor => {
-        this.save(advisor)
-        Redirect(routes.Advisors.info(advisor.sin))
+        if (save(advisor)){
+          Redirect(routes.Advisors.info(advisor.sin))
+        }else{
+          BadRequest(views.html.advisors.advisorCreate(advisorForm.fill(advisor), "Error: SIN already exists"))
+        }
       }
     )
   }
 
-  def save(form: AdvisorForm): Unit = {
-    val params = "'" + form.sin + "','" + form.name + "','" + form.workPhoneNumber.toString + "','" + form.homePhoneNumber.toString +
-      "','" + form.streetAddress + "','" + form.city + "','" + form.postalcode + "','" + form.reportsTo + "'"
-    val exec = "INSERT INTO employee VALUES ( " + params + ")"
-    val conn = DB.getConnection()
-    try {
-      val stmt = conn.createStatement
-      stmt.execute(exec)
-    } finally {
-      conn.close()
+  //saves the advisor, and returns true if successful.
+  def save(form: AdvisorForm): Boolean = {
+    if(!advisorExists(form.sin)){
+      val params = "'" + form.sin + "','" + form.name + "','" + form.workPhoneNumber.toString + "','" + form.homePhoneNumber.toString +
+        "','" + form.streetAddress + "','" + form.city + "','" + form.postalcode + "','" + form.reportsTo + "'"
+      val exec = "INSERT INTO employee VALUES ( " + params + ")"
+      val conn = DB.getConnection()
+      try {
+        val stmt = conn.createStatement
+        stmt.execute(exec)
+      } finally {
+        conn.close()
+      }
+      true
+    }else{
+      false
     }
   }
 
@@ -141,8 +167,8 @@ class Advisors extends Controller {
     mapping(
       "sin" -> nonEmptyText(9),
       "name" -> nonEmptyText(0, 20),
-      "workPhoneNumber" -> number,
-      "homePhoneNumber" -> number,
+      "workPhoneNumber" -> longNumber(),
+      "homePhoneNumber" -> longNumber(),
       "streetAddress" -> text(0, 20),
       "city" -> nonEmptyText(0, 20),
       "postalcode" -> nonEmptyText(7),
@@ -225,14 +251,11 @@ class Advisors extends Controller {
         " provides_service_to.sin = " + "'" + sin + "'" + " group by provides_service_to.cid) as AveragesByCustomer"
 
       val conn = DB.getConnection()
-
       var maxValue: String = ""
 
       try {
-
         val stmt = conn.createStatement
         val rs = stmt.executeQuery(exec)
-
         while (rs.next) {
           maxValue = rs.getString(1)
         }
@@ -247,6 +270,23 @@ class Advisors extends Controller {
     }
 
     return "No Services Provided Yet"
+  }
+
+  def advisorExists(sin : String) : Boolean = {
+    val conn = DB.getConnection()
+    val exec = "select * from employee where sin = '" + sin + "'"
+    var result : Boolean = false
+    try {
+      val stmt = conn.createStatement
+      val rs = stmt.executeQuery(exec)
+      while (rs.next) {
+        //something found
+        result = true
+      }
+    } finally {
+      conn.close()
+    }
+    result
   }
 
 }

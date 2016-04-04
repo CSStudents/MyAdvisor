@@ -1,4 +1,4 @@
-@(advisorForm : Form[AdvisorForm])(implicit messages: Messages)
+@(advisorForm : Form[AdvisorForm], info : String)(implicit messages: Messages)
 
     @import helper._
 
@@ -6,6 +6,7 @@
         <button class="btn btn-link">Home</button>
     </form>
     @helper.form(action = routes.Advisors.saveAdvisor) {
+        <p>@info</p
         @helper.inputText(advisorForm("sin"))
         @helper.inputText(advisorForm("name"))
         @helper.inputText(advisorForm("workPhoneNumber"))
