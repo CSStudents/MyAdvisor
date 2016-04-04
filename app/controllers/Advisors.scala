@@ -178,7 +178,7 @@ class Advisors extends Controller {
 
   private val queryForm: Form[Tuple1[String]] = Form(
     mapping(
-      "query" -> text
+      "Search by service offered" -> text
     )(Tuple1.apply)(Tuple1.unapply)
   )
 
