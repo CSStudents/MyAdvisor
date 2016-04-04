@@ -1,0 +1,21 @@
+@(clientForm : Form[ClientForm])(implicit messages: Messages)
+
+@import helper._
+<form action="@routes.Application.index" method="get">
+    <button class="btn btn-link">Home</button>
+</form>
+
+@helper.form(action = routes.Clients.saveClient) {
+    @helper.inputText(clientForm("cid"))
+    @helper.inputText(clientForm("name"))
+    @helper.inputDate(clientForm("birthdate"))
+    @helper.inputText(clientForm("homephone"))
+    @helper.inputText(clientForm("workphone"))
+    @helper.inputText(clientForm("streetAddress"))
+    @helper.inputText(clientForm("city"))
+    @helper.inputText(clientForm("province"))
+    @helper.inputText(clientForm("postalCode"))
+
+    <p><input type="submit" class="btn primary"
+    value='Add'></p>
+}

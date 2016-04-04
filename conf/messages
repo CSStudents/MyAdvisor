@@ -1,0 +1,7 @@
+advisor.form = Product details
+advisor.new = (new)
+advisor.new.command = New
+advisor.new.submit = Add
+advisor.new.success = Successfully added advisor {0}.
+validation.errors = Please correct the errors in the form.
+validation.reportsTo.incorrect = sin not found in DB

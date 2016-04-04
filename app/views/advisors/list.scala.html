@@ -1,0 +1,24 @@
+@(advisors : List[Advisor])(implicit messages: Messages)
+
+@main("Advisor list"){
+    <form action="@routes.Application.index" method="get">
+        <button class="btn btn-link">Home</button>
+        </form>
+    <h3>List of Advisors</h3>
+    <a href="@routes.Advisors.filterList("")" class="btn btn-success btn-lg" role="button">Search for an advisor...</a>
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>Phone Number</td>
+            <td>Location</td>
+        </tr>
+        @for(advisor <- advisors){
+            <tr>
+                <td><a href="@routes.Advisors.info(advisor.sin)">@advisor.name</a></td>
+                <td>@advisor.workPhoneNumber </td>
+                <td>@advisor.city</td>
+            </tr>
+        }
+        <a href="@routes.Advisors.newAdvisor()" class="btn btn-success btn-lg" role="button">Create Advisor</a>
+    </table>
+}

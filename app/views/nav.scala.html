@@ -1,0 +1,44 @@
+@()(implicit session: Session)
+
+@main("welcome") {
+    <div class="container">
+        <div class="page-header">
+            <h1>Welcome to MyAdvisor</h1>
+            @if(session.get("id").isDefined) {
+                <p>Hi, @session.get("username") </p>
+            } else {
+                <p>You are not logged in</p>
+            }
+            <div>
+                <form action="@routes.Advisors.list" method="get">
+                    <button class="btn btn-link">Advisors</button>
+                </form>
+                <form action="@routes.Offices.list" method="get">
+                    <button class="btn btn-link">Offices</button>
+                </form>
+            </div>
+
+
+        </div>
+        <div class="jumbotron">
+            <h2>About MyAdvisor</h2>
+
+            <p>MyAdvisor is a webapp which provides clients with legal counselling services. A client can book
+                an appointment with an advisor at an office location, and meet with them at the set date. Advisors
+                can view their clients, the history of the their services with each client etc.</p>
+
+            @if(session.get("id").isDefined) {
+                <a href="@routes.Application.logout" class="btn btn-default btn-lg" role="button">Logout</a>
+            }else{
+                <a href="@routes.Application.login(false)" class="btn btn-default btn-lg" role="button">Client Login</a>
+                <a href="@routes.Application.login(true)" class="btn btn-default btn-lg" role="button">Admin Login</a>
+                <a href="/clientCreate/" class="btn btn-success btn-lg" role="button">Create Account</a>
+            }
+
+
+            @*<a href="@routes.Services.newService()" class="btn btn-success btn-lg"> Request a new Service </a>*@
+
+        </div>
+
+    </div>
+}

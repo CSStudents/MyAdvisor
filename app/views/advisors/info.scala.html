@@ -1,0 +1,40 @@
+@(advisor : Advisor, services : List[Service])(content : Html)
+
+@main("Advisor: " + advisor.name){
+    <form action="@routes.Application.index" method="get">
+        <button class="btn btn-link">Home</button>
+        </form>
+    <h3>info for advisor: @advisor.name </h3>
+    <p>Work Phone Number: @advisor.workPhoneNumber </p>
+    <p>Location: @advisor.streetAddress </p>
+    <p>Specializes in branches:
+        @for(branch <- advisor.branches){
+            @** Need to fix the output commas.. **@
+            @branch.trim(),
+    }
+    </p>
+    <p>Reports to: @advisor.reports_To </p>
+
+    <h4>List of known services provided</h4>
+
+
+    @if(services != Nil) {
+        <ol type="1">
+        @for(service <- services){
+            <li> @service.serviceTypeName to <a href="@routes.Clients.info(service.sinOrcid)" >@service.name</a> (service id: <a href="@routes.Services.info(service.sid)">@service.sid </a>)</li>
+        }
+        </ol>
+
+        <br>
+
+        <h4>Calculate Profits</h4>
+
+        <a href="@routes.Advisors.maxMinCalc(advisor.sin, "max")" class="btn btn-success btn-sm"> Request Average Maximum Payment Received</a>
+        <a href="@routes.Advisors.maxMinCalc(advisor.sin, "min")" class="btn btn-success btn-sm"> Request Average Minimum Payment Received</a>
+    }
+    @if(services == Nil) {
+        <p>No Services Provided</p>
+    }
+    <a href="@routes.Services.newServiceByAdvisor(advisor.sin)" class="btn btn-success btn-lg" role="button"> Create service </a>
+
+}

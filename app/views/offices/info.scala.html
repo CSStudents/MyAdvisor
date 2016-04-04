@@ -1,0 +1,30 @@
+@(office : Office)
+
+@if(office != null){
+    @main("Office id:" + office.oid) {
+        <form action="@routes.Application.index" method="get">
+            <button class="btn btn-link">Home</button>
+        </form>
+        <h3>info for Office: @office.streetAddress , @office.city </h3>
+        <p>Work Phone Number: @office.mainOfficeNumber</p>
+
+        @if(office.branches == Nil) {
+            <p>This office has no branches to offer!</p>
+        } else {
+            <p>Specializes in branches:
+                @for(branch <- office.branches) {
+                    @** Need to fix the output commas.. **@
+                    @branch.trim(),
+            }
+            </p>
+        }
+
+    }
+}else{
+    @main("No office yet"){
+        <form action="@routes.Application.index" method="get">
+            <button class="btn btn-link">Home</button>
+        </form>
+        <h3>No office built yet at this location</h3>
+    }
+}

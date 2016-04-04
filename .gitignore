@@ -28,5 +28,6 @@ tmp/
 .cache-tests
 .classpath
 .project
+.idea
 
 bin/

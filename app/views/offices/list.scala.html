@@ -1,0 +1,20 @@
+@(offices : List[Office])
+
+@main("Offices list"){
+    <form action="@routes.Application.index" method="get">
+        <button class="btn btn-link">Home</button>
+    </form>
+  <h3>List of Offices</h3>
+    <table>
+        <tr>
+            <td>Street Address</td>
+            <td>Phone number</td>
+        </tr>
+        @for(office <- offices){
+            <tr>
+                <td><a href="@routes.Offices.info(office.oid)">@office.streetAddress</a></td>
+                <td>@office.mainOfficeNumber </td>
+            </tr>
+        }
+    </table>
+}

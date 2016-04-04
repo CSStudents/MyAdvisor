@@ -4,7 +4,50 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET     /db                         controllers.Application.db
+
+# Log in pages
+GET     /login                      controllers.Application.login(b : Boolean)
+POST    /login                      controllers.Application.parseCredentials(b : Boolean)
+GET     /logout                     controllers.Application.logout
+
+#Displays all adivsors in a list
+GET     /advisors/                  controllers.Advisors.list
+#Searches through advisors and their services
+GET     /advisors/query/             controllers.Advisors.filterList(q)
+POST    /advisors/query/             controllers.Advisors.parseQuery
+#Displays a form to submit as new Advisor
+GET     /advisors/new                controllers.Advisors.newAdvisor
+POST    /advisors/new                 controllers.Advisors.saveAdvisor
+#Displays a specific advisor info
+GET     /advisors/:sin                      controllers.Advisors.info(sin)
+GET     /advisors/:sin/:choice              controllers.Advisors.maxMinCalc(sin, choice)
+
+#Displays all offices in a list
+GET     /offices/                  controllers.Offices.list
+#Displays a specific office info using its unique id
+GET     /offices/:oid              controllers.Offices.info(oid)
+
+#Displays all users in a list -- need to restrict access to certain advisors on input
+GET     /user/                  controllers.Clients.list
+#Displays a specific user info using their unique cid, allows editing
+GET     /user/:cid              controllers.Clients.info(cid)
+POST    /user/:cid              controllers.Clients.editClient(cid)
+
+#Displays a specific user delete page using their unqiue cid
+GET     /userDelete/:cid              controllers.Clients.delete(cid)
+POST    /userDelete/:cid              controllers.Clients.deleteClient(cid)
+
+# Client Creation page
+GET     /clientCreate/             controllers.Clients.newClient
+POST    /clientCreate/             controllers.Clients.saveClient
+
+# Services
+GET     /services/new               controllers.Services.newService
+GET     /services/new/adv               controllers.Services.newServiceByAdvisor(sin)
+GET     /services/new/cli           controllers.Services.newServiceByClient(cid)
+POST    /services/new               controllers.Services.saveService
+GET     /services/:sid             controllers.Services.info(sid)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
