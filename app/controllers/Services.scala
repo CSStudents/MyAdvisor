@@ -75,44 +75,85 @@ class Services extends Controller{
 
   def newService = Action {
     val emptyServiceForm = ServiceForm(NextServiceNumber(),"",100,50,0,"","")
-    Ok(views.html.services.serviceCreate(serviceForm.fill(emptyServiceForm)))
+    Ok(views.html.services.serviceCreate(serviceForm.fill(emptyServiceForm), "Fill in all required fields please"))
   }
 
   def newServiceByClient(cid : String) = Action {
     val clientServiceForm = ServiceForm(NextServiceNumber(),"",100,50,0,"",cid)
-    Ok(views.html.services.serviceCreate(serviceForm.fill(clientServiceForm)))
+    Ok(views.html.services.serviceCreate(serviceForm.fill(clientServiceForm), "Fill in all required fields please"))
   }
 
   def newServiceByAdvisor(sin : String) = Action{
     val advisorServiceForm = ServiceForm(NextServiceNumber(),"",100,50,0,sin,"")
-    Ok(views.html.services.serviceCreate(serviceForm.fill(advisorServiceForm)))
+    Ok(views.html.services.serviceCreate(serviceForm.fill(advisorServiceForm), "Fill in all required fields please"))
   }
 
   def saveService = Action { implicit request =>
     serviceForm.bindFromRequest.fold(
       formWithErrors => {
         Logger.debug("inside error")
-        BadRequest(views.html.services.serviceCreate(formWithErrors))
+        BadRequest(views.html.services.serviceCreate(formWithErrors, "Error: see below"))
       },
       service => {
-        this.save(service)
-        Redirect(routes.Services.info(service.sid))
+        if(this.save(service)){
+          Redirect(routes.Services.info(service.sid))
+        }else{
+          BadRequest(views.html.services.serviceCreate(serviceForm.fill(service), "Error: Invalid cid/sin/sid"))
+        }
       }
     )
   }
 
-  def save(form : ServiceForm): Unit ={
-    val params = "'" + form.sid + "','" + form.serviceTypeName + "','" + form.baseFee.toString + "','" + form.hourlyRate.toString +
-      "','" + form.amountPaid.toString + "'"
-    val exec =  "INSERT INTO service VALUES ( " + params + ");" +
-      "INSERT INTO provides_service_to VALUES ('" + form.advisorSin + "','" + form.clientCid + "','" + form.sid + "')"
+  def save(form : ServiceForm): Boolean ={
+    if(validateForm(form)){
+      val params = "'" + form.sid + "','" + form.serviceTypeName + "','" + form.baseFee.toString + "','" + form.hourlyRate.toString +
+        "','" + form.amountPaid.toString + "'"
+      val exec =  "INSERT INTO service VALUES ( " + params + ");" +
+        "INSERT INTO provides_service_to VALUES ('" + form.advisorSin + "','" + form.clientCid + "','" + form.sid + "')"
+      val conn = DB.getConnection()
+      try {
+        val stmt = conn.createStatement
+        stmt.execute(exec)
+      } finally {
+        conn.close()
+      }
+      true
+    }else{
+      //validation failed
+      false
+    }
+  }
+
+  def validateForm( form : ServiceForm): Boolean = {
+    var cidExists : Boolean = false
+    var sinExists : Boolean = false
+    var sidDoesntExist : Boolean = false
     val conn = DB.getConnection()
+    val cidCheck = "select * from client where cid = '" + form.clientCid + "'"
+    val sinCheck = "select * from employee where sin = '" + form.advisorSin + "'"
+    val sidCheck = "select * from service where sid = '" + form.sid + "'"
     try {
       val stmt = conn.createStatement
-      stmt.execute(exec)
+      var rs = stmt.executeQuery(cidCheck)
+      while (rs.next) {
+        //cid found
+        cidExists = true
+      }
+      rs = stmt.executeQuery(sinCheck)
+      while (rs.next) {
+        //sin found
+        sinExists = true
+      }
+      rs = stmt.executeQuery(sidCheck)
+      while (rs.next) {
+        //sid found, should be empty
+        sidDoesntExist = true
+      }
     } finally {
       conn.close()
     }
+    //we want a cid and sin that exists, anda new sid
+    cidExists && sinExists && !sidDoesntExist
   }
 
   private val serviceForm: Form[ServiceForm] = Form(

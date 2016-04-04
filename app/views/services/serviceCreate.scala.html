@@ -1,4 +1,4 @@
-@(serviceForm: Form[ServiceForm])(implicit messages: Messages)
+@(serviceForm: Form[ServiceForm], info : String)(implicit messages: Messages)
 
 @import helper._
     <form action="@routes.Application.index" method="get">
@@ -6,6 +6,8 @@
     </form>
 
 @helper.form(action = routes.Services.saveService) {
+    <p>@info</p>
+
     @helper.inputText(serviceForm("sid"))
     @helper.inputText(serviceForm("serviceTypeName"))
     @helper.inputText(serviceForm("baseFee"))

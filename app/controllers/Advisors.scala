@@ -182,11 +182,6 @@ class Advisors extends Controller {
     )(Tuple1.apply)(Tuple1.unapply)
   )
 
-
-  def lookBySin(sin: Int): Boolean = {
-    true
-  }
-
   def getServiceByAdvisor(sin: String): List[Service] = {
     var serviceList: List[Service] = List()
     val conn = DB.getConnection()

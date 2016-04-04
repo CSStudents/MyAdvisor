@@ -1,4 +1,4 @@
-@(clientForm : Form[ClientForm])(implicit messages: Messages)
+@(clientForm : Form[ClientForm], info : String)(implicit messages: Messages)
 
 @import helper._
 <form action="@routes.Application.index" method="get">
@@ -6,6 +6,7 @@
 </form>
 
 @helper.form(action = routes.Clients.saveClient) {
+    <p>@info</p>
     @helper.inputText(clientForm("cid"))
     @helper.inputText(clientForm("name"))
     @helper.inputDate(clientForm("birthdate"))
