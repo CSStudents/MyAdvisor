@@ -194,7 +194,7 @@ class Clients extends Controller{
 
   private val clientForm: Form[ClientForm] = Form(
     mapping(
-      "cid" -> nonEmptyText(9),
+      "cid" -> nonEmptyText(0,9),
       "name" -> nonEmptyText(0,20),
       "birthdate" -> date,
       "homephone" -> longNumber,
